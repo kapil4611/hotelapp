@@ -3,6 +3,9 @@ const router = express.Router();
 const Person = require("../models/Person");
 const { error } = require("console");
 
+const passport = require("../auth");
+const localAuthMiddleware = passport.authenticate("local", {session: false});
+
 router.post("/", async (req, res) => {
     try {
         const data = req.body;
@@ -15,7 +18,7 @@ router.post("/", async (req, res) => {
     
 });
 
-router.get("/", async(req, res) => {
+router.get("/", localAuthMiddleware, async(req, res) => {
     try {
         const data = await Person.find();
         console.log("Data fatched");
@@ -26,7 +29,7 @@ router.get("/", async(req, res) => {
     
 });
 
-router.get("/:workType", async(req, res) => {
+router.get("/:workType", localAuthMiddleware, async(req, res) => {
     try{
         const workType = req.params.workType;
         if(workType == "chef" || workType == "manager" || workType == "waiter") {
