@@ -1,7 +1,11 @@
 // db.js build connectionn between nodejs server and mongodb database server
 const mongoose = require("mongoose");
+// require("dotenv").config();
 
-mongoose.connect(process.env.MONGODB, {
+// const mongoURL = process.env.MONGODB_URL_LOCAL;
+const mongoURL = process.env.MONGODB_URL;
+
+mongoose.connect(mongoURL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
