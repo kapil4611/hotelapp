@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 const db = require("./db");
 
+const passport = require("./auth");
+
 const bodyParsser = require("body-parser");
 app.use(bodyParsser.json());
 
@@ -16,6 +18,10 @@ const logRequest = (req, res, next) => {
 
 app.use(logRequest);
 
+app.use(passport.initialize());
+
+const localAuthMiddleware = passport.authenticate("local", {session: false});
+
 app.get("/", (req, res) => {
     res.send("Welcome to our Hotel");
 });
@@ -25,7 +31,7 @@ const personRoutes = require("./routes/personRoutes");
 const menuRoutes = require("./routes/menuItemRoutes");
 
 // Use the routers
-app.use("/person", personRoutes);
+app.use("/person", localAuthMiddleware, personRoutes);
 app.use("/menu", menuRoutes);
 
 app.listen(PORT, () => {
