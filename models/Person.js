@@ -24,7 +24,7 @@ const personSchema = new mongoose.Schema({
         unique: true
     },
     address: {
-        type:String
+        type: String
     },
     salary: {
         type: Number,
@@ -40,27 +40,27 @@ const personSchema = new mongoose.Schema({
     }
 });
 
-personSchema.pre("save", async function(next) {
+personSchema.pre("save", async function (next) {
     const person = this;
     // Hash the password only if it has been modified or it's new
-    if(!person.isModified('password')) return next();
-    try{
+    if (!person.isModified('password')) return next();
+    try {
         // hash password generation
         const salt = await bcrypt.genSalt(10);
         // hash password
         const hashedPassword = await bcrypt.hash(person.password, salt);
         person.password = hashedPassword;
         next();
-    } catch(err){
+    } catch (err) {
         return next(err);
     }
 });
 
-personSchema.methods.comparePassword = async function(candidatePassword) {
-    try{
+personSchema.methods.comparePassword = async function (candidatePassword) {
+    try {
         const isMatch = await bcrypt.compare(candidatePassword, this.password);
         return isMatch;
-    } catch(err) {
+    } catch (err) {
         throw err;
     }
 }
